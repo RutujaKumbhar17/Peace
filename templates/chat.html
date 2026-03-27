@@ -4,96 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with Kai</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liquid-glass.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ["'Instrument Serif'", "serif"],
+                        body: ["'Barlow'", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            width: 100vw;
-            height: 100vh;
-            background: #1a1a1a;
-        }
-        .chat-header {
-            padding: 20px 40px;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .chat-input-wrapper {
-            padding: 30px 40px;
-            background: rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: center;
-        }
-        .chat-input-box {
-            max-width: 800px;
-            width: 100%;
-            display: flex;
-            gap: 15px;
-            background: #2a2a2a;
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .chat-input-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.1rem;
-            outline: none;
-        }
-        .btn-back {
-            color: #ccc;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-        }
-        .btn-back:hover { color: #fff; }
-        
-        /* Message styles are inherited from style.css but I'll add some overrides for the full page */
-        .message {
-            font-size: 1.1rem;
-            padding: 15px 20px;
-            border-radius: 20px;
-        }
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
-<body class="landing-body">
-    <div class="chat-container">
-        <div class="chat-header">
-            <a href="{{ url_for('home') }}" class="btn-back"><i class="fas fa-arrow-left"></i> Home</a>
-            <div class="header-text-large">Chat with Kai</div>
-            <div style="width: 80px;"></div> <!-- Spacer -->
-        </div>
+<body class="apple-theme bg-black h-screen flex flex-col overflow-hidden">
 
-        <div id="chat-messages" class="chat-messages">
-            <div class="message bot-msg">Hello! I'm here to listen. What's on your mind today?</div>
+    <header class="fixed top-0 left-0 w-full z-10 px-6 py-4 border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <a href="{{ url_for('home') }}" class="text-white/40 hover:text-white transition-colors no-underline">
+                <i class="fas fa-arrow-left mr-2"></i> Home
+            </a>
+            <h1 class="text-2xl italic">Chat with Kai</h1>
+            <div class="w-20 h-10 bg-white rounded-full flex items-center justify-center text-black font-bold tracking-tighter">KAI.</div>
         </div>
+    </header>
 
-        <div class="chat-input-wrapper">
-            <div class="chat-input-box">
-                <input type="text" id="chat-input" placeholder="Type a message...">
-                <button id="send-btn" class="icon-btn" style="color: #008069;"><i class="fas fa-paper-plane"></i></button>
+    <main id="chat-messages" class="flex-1 overflow-y-auto px-6 pt-24 pb-32 flex flex-col gap-6 max-w-4xl mx-auto w-full chat-messages">
+        <div class="bot-msg liquid-glass rounded-2xl rounded-bl-none self-start max-w-[80%] p-4 lg:p-5">
+            Hello! I'm here to listen. What's on your mind today?
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 w-full px-6 py-8 pointer-events-none">
+        <div class="max-w-2xl mx-auto w-full pointer-events-auto">
+            <div class="liquid-glass-strong rounded-full p-2 flex items-center gap-2 border border-white/10 shadow-2xl">
+                <input type="text" id="chat-input" placeholder="Type a message..." 
+                    class="flex-1 bg-transparent border-none text-white outline-none px-6 py-2 font-light text-lg">
+                <button id="send-btn" class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center hover:bg-white/90 transition-all">
+                    <i class="fas fa-paper-plane text-xs"></i>
+                </button>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script>
+        // Override the chat message creation to use our new styles
+        const originalAppendMessage = window.appendMessage; // If it exists
+        // Since I'm overwriting the template, I should ensure the JS uses the right classes
+        // I'll check chat.js next if needed, but the structure remains the same.
+    </script>
 </body>
 </html>

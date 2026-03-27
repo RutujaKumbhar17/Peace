@@ -1,14 +1,14 @@
 :root {
-    --primary-color: #008069; 
-    --secondary-color: #1a1a1a; 
-    --header-bg: rgba(0, 0, 0, 0.4); 
-    --control-bg: rgba(25, 25, 25, 0.85); 
-    --card-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    --primary-color: #008069;
+    --secondary-color: #1a1a1a;
+    --header-bg: rgba(0, 0, 0, 0.4);
+    --control-bg: rgba(25, 25, 25, 0.85);
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
     --light-text: #FFFFFF;
     --dark-text: #E0E0E0;
     --pip-size-width: 250px;
     --pip-size-height: 180px;
-    
+
     /* Chat Colors */
     --chat-bg: rgba(30, 30, 30, 0.95);
     --user-msg-bg: #005c4b;
@@ -16,12 +16,12 @@
 }
 
 body {
-    background: var(--secondary-color); 
+    background: var(--secondary-color);
     color: var(--dark-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     height: 100vh;
-    overflow: hidden; 
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,8 +30,8 @@ body {
 .main-screen {
     position: relative;
     width: 100vw;
-    height: 100vh; 
-    max-width: none; 
+    height: 100vh;
+    max-width: none;
     padding: 0;
     margin: 0;
     overflow: hidden;
@@ -40,19 +40,20 @@ body {
 /* --- HEADER PANEL --- */
 .header-panel {
     position: absolute;
-    top: 0; 
+    top: 0;
     left: 0;
-    width: 100%; 
+    width: 100%;
     height: 70px;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-    color: var(--light-text); 
+    color: var(--light-text);
     padding: 0 40px;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: none;
-    pointer-events: none; /* Let clicks pass through to video */
+    pointer-events: none;
+    /* Let clicks pass through to video */
 }
 
 .header-text-large {
@@ -65,7 +66,7 @@ body {
 .header-text-small {
     font-size: 0.9rem;
     opacity: 0.8;
-    position: absolute; 
+    position: absolute;
     left: 20px;
     color: var(--light-text);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -79,7 +80,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -96,25 +97,25 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1); 
+    transform: scaleX(-1);
 }
 
 .secondary-pip {
-    width: var(--pip-size-width); 
+    width: var(--pip-size-width);
     height: var(--pip-size-height);
     background: #202020;
     border-radius: 12px;
-    position: absolute; 
-    bottom: 100px; 
-    right: 30px; 
-    top: auto; 
-    left: auto; 
+    position: absolute;
+    bottom: 100px;
+    right: 30px;
+    top: auto;
+    left: auto;
     overflow: hidden;
-    border: 3px solid var(--primary-color); 
+    border: 3px solid var(--primary-color);
     box-shadow: var(--card-shadow);
-    z-index: 100; 
-    cursor: grab; 
-    transform: none !important; 
+    z-index: 100;
+    cursor: grab;
+    transform: none !important;
 }
 
 .movable-pip {
@@ -128,14 +129,16 @@ body {
     transform: scaleX(-1);
 }
 
-.primary-view #kaiAvatar { display: block; }
+.primary-view #kaiAvatar {
+    display: block;
+}
 
 /* --- UI Elements --- */
 .label {
     position: absolute;
     bottom: 5px;
     left: 10px;
-    background: rgba(0, 0, 0, 0.5); 
+    background: rgba(0, 0, 0, 0.5);
     padding: 3px 10px;
     border-radius: 10px;
     font-weight: 500;
@@ -159,15 +162,16 @@ body {
 
 /* --- CONTROLS BAR --- */
 .controls-bar {
-    position: fixed; 
+    position: fixed;
     bottom: 20px;
-    right: 30px; /* Moved to corner as requested */
+    right: 30px;
+    /* Moved to corner as requested */
     display: flex;
     gap: 15px;
-    background: rgba(0, 0, 0, 0.4); 
+    background: rgba(0, 0, 0, 0.4);
     padding: 10px 15px;
     border-radius: 50px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
     z-index: 1000;
 }
 
@@ -179,51 +183,60 @@ body {
     font-size: 1.2rem;
     cursor: pointer;
     color: var(--light-text);
-    background: #4a4a4a; 
-    box-shadow: 0 3px 0 #2c2c2c; 
+    background: #4a4a4a;
+    box-shadow: 0 3px 0 #2c2c2c;
     transition: all 0.1s ease;
 }
 
-.control-btn:hover { background: #5a5a5a; }
+.control-btn:hover {
+    background: #5a5a5a;
+}
 
 .control-btn:active {
     box-shadow: 0 1px 0 #2c2c2c;
-    transform: translateY(2px); 
+    transform: translateY(2px);
 }
 
 .control-btn.hangup {
-    background: #e74c3c; 
+    background: #e74c3c;
     box-shadow: 0 3px 0 #b3362d;
 }
-.control-btn.hangup:active { box-shadow: 0 1px 0 #b3362d; }
+
+.control-btn.hangup:active {
+    box-shadow: 0 1px 0 #b3362d;
+}
 
 /* --- CHAT PANEL STYLES (UPDATED FOR RESIZING) --- */
 .chat-panel {
     position: absolute;
     left: 20px;
-    top: 80px; 
+    top: 80px;
     /* Default size */
     width: 320px;
-    height: 60vh; 
-    
+    height: 60vh;
+
     /* RESIZABLE PROPERTIES */
     min-width: 250px;
     min-height: 300px;
     max-width: 90vw;
     max-height: 80vh;
-    resize: both; /* Enables resizing handle in bottom right */
-    overflow: hidden; /* Contains children */
-    
+    resize: both;
+    /* Enables resizing handle in bottom right */
+    overflow: hidden;
+    /* Contains children */
+
     background: var(--chat-bg);
     border-radius: 15px;
     display: flex;
     flex-direction: column;
-    z-index: 5000; /* Higher than everything else */
-    pointer-events: auto; /* Ensure clicks are captured */
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; 
+    z-index: 5000;
+    /* Higher than everything else */
+    pointer-events: auto;
+    /* Ensure clicks are captured */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     /* Removed width transition to allow manual resize */
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
 }
 
@@ -235,7 +248,7 @@ body {
 
 .chat-header {
     padding: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -276,7 +289,7 @@ body {
 
 .chat-input-area {
     padding: 15px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     gap: 10px;
     background: transparent;
@@ -301,22 +314,49 @@ body {
     transition: color 0.2s;
 }
 
-.icon-btn:hover { color: var(--primary-color); }
-#send-btn { color: var(--primary-color); }
+.icon-btn:hover {
+    color: var(--primary-color);
+}
+
+#send-btn {
+    color: var(--primary-color);
+}
 
 /* --- 3D AVATAR --- */
-#kai-video-container { background-color: #000; }
-#avatar-container { width: 100%; height: 100%; overflow: hidden; }
+#kai-video-container {
+    background-color: #000;
+}
+
+#avatar-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
 #avatar-container canvas {
-    display: block; width: 100% !important; height: 100% !important;
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Animations */
 @keyframes speakingPulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.005); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.005);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
+
 .primary-view.is-speaking #kaiAvatar {
     animation: speakingPulse 0.4s infinite alternate;
 }
@@ -327,32 +367,67 @@ body {
 
 /* Animation Utilities */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
-.fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
-.fade-in { animation: fadeIn 1.2s ease-out forwards; opacity: 0; }
-.delay-1 { animation-delay: 0.2s; }
-.delay-2 { animation-delay: 0.4s; }
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.fade-in {
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0;
+}
+
+.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.delay-2 {
+    animation-delay: 0.4s;
+}
 
 /* Landing Page Specifics */
-.landing-body, .login-body {
+.landing-body,
+.login-body {
     background: linear-gradient(135deg, #0f1c1a 0%, #002b24 100%);
     color: #e0e0e0;
     font-family: 'Segoe UI', sans-serif;
-    display: block; /* Override flex from main body style if needed */
+    display: block;
+    /* Override flex from main body style if needed */
     height: auto;
     min-height: 100vh;
     overflow-y: auto;
@@ -363,7 +438,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
@@ -384,7 +459,9 @@ body {
     transition: color 0.3s;
 }
 
-.nav-links a:hover { color: #008069; }
+.nav-links a:hover {
+    color: #008069;
+}
 
 .btn-nav {
     padding: 8px 20px;
@@ -453,12 +530,14 @@ body {
     margin-left: 15px;
     text-decoration: none;
     font-weight: bold;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 30px;
     transition: all 0.3s;
 }
 
-.btn-secondary:hover { border-color: #fff; }
+.btn-secondary:hover {
+    border-color: #fff;
+}
 
 .hero-visual {
     position: relative;
@@ -473,7 +552,7 @@ body {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,128,105,0.4) 0%, rgba(0,0,0,0) 70%);
+    background: radial-gradient(circle, rgba(0, 128, 105, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
     position: absolute;
     animation: speakingPulse 3s infinite;
 }
@@ -491,23 +570,39 @@ body {
     justify-content: center;
     gap: 30px;
     padding: 50px 10%;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .feature-card {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     padding: 30px;
     border-radius: 15px;
     text-align: center;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     transition: transform 0.3s;
 }
 
-.feature-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.08); }
+.feature-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+}
 
-.feature-card i { font-size: 2.5rem; color: #008069; margin-bottom: 20px; }
-.feature-card h3 { margin-bottom: 15px; color: #fff; }
-.feature-card p { color: #aaa; line-height: 1.5; font-size: 0.95rem; }
+.feature-card i {
+    font-size: 2.5rem;
+    color: #008069;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.feature-card p {
+    color: #aaa;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
 
 /* Login Page Specifics */
 .login-body {
@@ -524,13 +619,24 @@ body {
     border-radius: 20px;
     width: 100%;
     max-width: 400px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-.login-header { text-align: center; margin-bottom: 30px; }
-.login-header h2 { font-size: 2rem; margin-bottom: 10px; color: #fff; }
-.login-header p { color: #888; }
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.login-header p {
+    color: #888;
+}
 
 .input-group {
     position: relative;
@@ -555,10 +661,13 @@ body {
     font-size: 1rem;
     outline: none;
     transition: border-color 0.3s;
-    box-sizing: border-box; /* Fix padding issue */
+    box-sizing: border-box;
+    /* Fix padding issue */
 }
 
-.input-group input:focus { border-color: #008069; }
+.input-group input:focus {
+    border-color: #008069;
+}
 
 .remember-me {
     display: flex;
@@ -569,7 +678,9 @@ body {
     font-size: 0.9rem;
 }
 
-.full-width { width: 100%; }
+.full-width {
+    width: 100%;
+}
 
 .login-footer {
     text-align: center;
@@ -578,4 +689,7 @@ body {
     color: #666;
 }
 
-.login-footer a { color: #008069; text-decoration: none; }
+.login-footer a {
+    color: #008069;
+    text-decoration: none;
+}

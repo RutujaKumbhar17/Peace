@@ -4,109 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Kai Companion</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .home-container {
-            padding: 40px;
-            max-width: 1200px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liquid-glass.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ["'Instrument Serif'", "serif"],
+                        body: ["'Barlow'", "sans-serif"],
+                    }
+                }
+            }
         }
-        .home-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .home-header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #fff, #008069);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .section-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            width: 100%;
-        }
-        .section-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        .section-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #008069;
-            box-shadow: 0 10px 30px rgba(0, 128, 105, 0.2);
-        }
-        .section-card i {
-            font-size: 3.5rem;
-            color: #008069;
-        }
-        .section-card h3 {
-            font-size: 1.5rem;
-            margin: 0;
-        }
-        .section-card p {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin: 0;
-        }
-        .back-to-landing {
-            margin-top: 40px;
-            color: #888;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-        .back-to-landing:hover { color: #fff; }
-    </style>
+    </script>
 </head>
-<body class="landing-body">
-    <div class="home-container fade-in-up">
-        <div class="home-header">
-            <h1>Welcome to Your Space</h1>
-            <p>How would you like to connect with Kai today?</p>
+<body class="apple-theme bg-black min-h-screen p-6 md:p-12">
+
+    <nav class="fixed top-8 left-8 z-50">
+        <div class="w-20 h-10 bg-white rounded-full flex items-center justify-center text-black font-bold tracking-tighter shadow-2xl">KAI.</div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto mt-20">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl mb-4">Welcome to Your Space</h1>
+            <p class="text-white/60 text-lg font-light">How would you like to connect with Kai today?</p>
         </div>
 
-        <div class="section-grid">
-            <a href="{{ url_for('chat') }}" class="section-card">
-                <i class="fas fa-comment-dots"></i>
-                <h3>Talk with Kai</h3>
-                <p>Text-based conversation and support</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a href="{{ url_for('chat') }}" class="liquid-glass rounded-[40px] p-10 flex flex-col items-start gap-6 hover:bg-white/[0.03] transition-all group no-underline text-white border border-white/5">
+                <div class="liquid-glass-strong w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+                    <i class="fas fa-comment-dots text-white/80 group-hover:text-white transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-2 italic">Talk with Kai</h3>
+                    <p class="text-white/50 font-light">Text-based conversation and support</p>
+                </div>
             </a>
-            <a href="{{ url_for('companion') }}" class="section-card">
-                <i class="fas fa-video"></i>
-                <h3>Video Call</h3>
-                <p>Interactive 3D avatar experience</p>
+
+            <a href="{{ url_for('companion') }}" class="liquid-glass rounded-[40px] p-10 flex flex-col items-start gap-6 hover:bg-white/[0.03] transition-all group no-underline text-white border border-white/5">
+                <div class="liquid-glass-strong w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+                    <i class="fas fa-video text-white/80 group-hover:text-white transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-2 italic">Video Call</h3>
+                    <p class="text-white/50 font-light">Interactive 3D avatar experience</p>
+                </div>
             </a>
-            <a href="{{ url_for('diary') }}" class="section-card">
-                <i class="fas fa-book-open"></i>
-                <h3>My Diary</h3>
-                <p>Reflect and record your thoughts</p>
+
+            <a href="{{ url_for('diary') }}" class="liquid-glass rounded-[40px] p-10 flex flex-col items-start gap-6 hover:bg-white/[0.03] transition-all group no-underline text-white border border-white/5">
+                <div class="liquid-glass-strong w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+                    <i class="fas fa-book-open text-white/80 group-hover:text-white transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-2 italic">My Diary</h3>
+                    <p class="text-white/50 font-light">Reflect and record your thoughts</p>
+                </div>
             </a>
-            <a href="{{ url_for('dashboard') }}" class="section-card">
-                <i class="fas fa-chart-line"></i>
-                <h3>Dashboard</h3>
-                <p>Overview of your wellness journey</p>
+
+            <a href="{{ url_for('dashboard') }}" class="liquid-glass rounded-[40px] p-10 flex flex-col items-start gap-6 hover:bg-white/[0.03] transition-all group no-underline text-white border border-white/5">
+                <div class="liquid-glass-strong w-14 h-14 rounded-full flex items-center justify-center text-2xl">
+                    <i class="fas fa-chart-line text-white/80 group-hover:text-white transition-colors"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-2 italic">Dashboard</h3>
+                    <p class="text-white/50 font-light">Overview of your wellness journey</p>
+                </div>
             </a>
         </div>
 
-        <a href="{{ url_for('landing') }}" class="back-to-landing"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+        <div class="mt-16 text-center">
+            <a href="{{ url_for('landing') }}" class="text-white/40 hover:text-white transition-colors text-sm no-underline">
+                <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
+            </a>
+        </div>
     </div>
+
 </body>
 </html>

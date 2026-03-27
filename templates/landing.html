@@ -3,55 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kai - Your Wellness Companion</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="landing-body">
+    <title>Kai Companion | Wildly Reimagined</title>
     
-    <nav class="navbar">
-        <div class="logo">Kai.</div>
-        <div class="nav-links">
-            <a href="#">About</a>
-            <a href="#">Features</a>
-            <a href="{{ url_for('login') }}" class="btn-nav">Sign In</a>
+    <!-- External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liquid-glass.css') }}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ["'Instrument Serif'", "serif"],
+                        body: ["'Barlow'", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="apple-theme bg-black">
+
+    <!-- SECTION 1 — NAVBAR -->
+    <nav class="fixed top-4 left-0 w-full z-50 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="w-20 h-10 bg-white rounded-full flex items-center justify-center text-black font-bold tracking-tighter">KAI.</div>
+            <div></div> <!-- Spacer for balance -->
         </div>
     </nav>
 
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="fade-in-up">Find Peace in Conversation</h1>
-            <p class="fade-in-up delay-1">
+    <!-- SECTION 2 — HERO -->
+    <section class="relative h-[1000px] w-full flex flex-col items-center pt-[150px] px-6 text-center overflow-hidden">
+        <video 
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260307_083826_e938b29f-a43a-41ec-a153-3d4730578ab8.mp4" 
+            class="absolute top-[20%] left-0 w-full h-auto object-contain z-0"
+            autoplay loop muted playsinline poster="/images/hero_bg.jpeg">
+        </video>
+        <div class="absolute inset-0 bg-black/5 z-0"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-[300px] video-fade-bottom z-[1]"></div>
+
+        <div class="relative z-10 flex flex-col items-center">
+            <h1 class="text-5xl md:text-7xl lg:text-[6rem] font-heading italic text-white leading-[0.8] tracking-[-3px] max-w-none text-center whitespace-nowrap" id="hero-title">
+                Find Peace In Conversation !
+            </h1>
+
+            <p class="mt-8 text-white/60 max-w-xl text-lg font-light leading-relaxed opacity-0" id="hero-subtext">
                 Kai is an emotionally intelligent 3D companion designed to listen, understand, and help you navigate your thoughts in a safe, judgment-free space.
             </p>
-            <div class="hero-buttons fade-in-up delay-2">
-                <a href="{{ url_for('login') }}" class="btn-primary">Start Your Journey</a>
-                <a href="#features" class="btn-secondary">Learn More</a>
+
+            <div class="mt-12 flex items-center justify-center opacity-0" id="hero-btns">
+                <a href="{{ url_for('login') }}" class="liquid-glass-strong px-10 py-5 rounded-full flex items-center gap-2 font-medium hover:scale-105 transition-transform no-underline text-white text-lg">
+                    Get Started <i class="fas fa-arrow-up-right-from-square text-sm"></i>
+                </a>
             </div>
         </div>
-        <div class="hero-visual fade-in delay-1">
-            <div class="glowing-circle"></div>
-            <i class="fas fa-hand-holding-heart floating-icon"></i>
-        </div>
-    </div>
+    </section>
 
-    <div id="features" class="features-section">
-        <div class="feature-card fade-in-up">
-            <i class="fas fa-brain"></i>
-            <h3>Emotional Intelligence</h3>
-            <p>Kai analyzes subtle cues to understand how you truly feel, adapting its personality to support you.</p>
+    <!-- SECTION 3 — IMPACT WORDS -->
+    <section class="py-24 border-t border-white/5 bg-black/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20">
+                <span class="text-3xl md:text-4xl font-heading italic text-white/50 tracking-widest hover:text-white transition-colors">EMPATHY</span>
+                <span class="text-3xl md:text-4xl font-heading italic text-white/50 tracking-widest hover:text-white transition-colors">REFLECTION</span>
+                <span class="text-3xl md:text-4xl font-heading italic text-white/50 tracking-widest hover:text-white transition-colors">DIALOGUE</span>
+                <span class="text-3xl md:text-4xl font-heading italic text-white/50 tracking-widest hover:text-white transition-colors">WELLNESS</span>
+                <span class="text-3xl md:text-4xl font-heading italic text-white/50 tracking-widest hover:text-white transition-colors">CONNECTION</span>
+            </div>
         </div>
-        <div class="feature-card fade-in-up delay-1">
-            <i class="fas fa-shield-alt"></i>
-            <h3>Safe & Private</h3>
-            <p>Your conversations are your own. Experience a therapy-like environment from the comfort of your home.</p>
-        </div>
-        <div class="feature-card fade-in-up delay-2">
-            <i class="fas fa-infinity"></i>
-            <h3>Always Available</h3>
-            <p>Day or night, Kai is here to listen. No appointments needed, just meaningful connection.</p>
-        </div>
-    </div>
+    </section>
 
+    <!-- SECTION 5 — CORE FEATURES -->
+    <section id="features" class="py-32 px-6 md:px-16 lg:px-24 max-w-7xl mx-auto">
+        <div class="text-center mb-24">
+            <div class="section-badge liquid-glass">The Core Experience</div>
+            <h2 class="text-5xl md:text-6xl mt-4">Everything you need, in one space.</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="liquid-glass rounded-[40px] p-12 border border-white/5 flex flex-col gap-6">
+                <div class="liquid-glass-strong w-16 h-16 rounded-full flex items-center justify-center text-3xl">
+                    <i class="fas fa-comment-dots text-white/80"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-4 italic">Empathetic AI Dialogue</h3>
+                    <p class="text-white/50 font-light leading-relaxed">Speak your mind in a safe, judgment-free space with Kai, your emotionally intelligent companion.</p>
+                </div>
+            </div>
+
+            <div class="liquid-glass rounded-[40px] p-12 border border-white/5 flex flex-col gap-6">
+                <div class="liquid-glass-strong w-16 h-16 rounded-full flex items-center justify-center text-3xl">
+                    <i class="fas fa-video text-white/80"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-4 italic">Interactive 3D Avatar</h3>
+                    <p class="text-white/50 font-light leading-relaxed">Engage in face-to-face conversations with a hyper-realistic virtual companion for deeper connection.</p>
+                </div>
+            </div>
+
+            <div class="liquid-glass rounded-[40px] p-12 border border-white/5 flex flex-col gap-6">
+                <div class="liquid-glass-strong w-16 h-16 rounded-full flex items-center justify-center text-3xl">
+                    <i class="fas fa-book-open text-white/80"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-4 italic">Personal Reflection Diary</h3>
+                    <p class="text-white/50 font-light leading-relaxed">Organize your thoughts and feelings in a digital sanctuary designed for self-discovery.</p>
+                </div>
+            </div>
+
+            <div class="liquid-glass rounded-[40px] p-12 border border-white/5 flex flex-col gap-6">
+                <div class="liquid-glass-strong w-16 h-16 rounded-full flex items-center justify-center text-3xl">
+                    <i class="fas fa-chart-line text-white/80"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl mb-4 italic">Wellness Analytics</h3>
+                    <p class="text-white/50 font-light leading-relaxed">Understand your emotional journey through insightful trends and historical reflections.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9 — CTA FOOTER (HLS) -->
+    <section class="relative py-48 px-6 text-center overflow-hidden">
+        <video id="hls-video-3" class="absolute inset-0 w-full h-full object-cover z-0 opacity-40" autoplay loop muted playsinline></video>
+        <div class="absolute top-0 left-0 w-full h-[300px] video-fade-top z-[1]"></div>
+        <div class="relative z-10">
+            <h2 class="text-6xl md:text-8xl">Your next website starts here.</h2>
+            <p class="mt-8 text-white/60 text-xl max-w-2xl mx-auto">Book a free strategy call. See what AI-powered design can do.</p>
+            <div class="mt-12 flex flex-col md:flex-row items-center justify-center gap-6">
+                <button class="liquid-glass-strong px-10 py-5 rounded-full font-bold text-lg hover:scale-105 transition-transform">Book a Call</button>
+                <a href="#" class="bg-white text-black px-10 py-5 rounded-full font-bold text-lg hover:bg-white/90 no-underline">View Pricing</a>
+            </div>
+        </div>
+
+        <footer class="mt-48 pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-white/40 text-xs">
+            <span>&copy; 2026 Studio. All rights reserved.</span>
+            <div class="flex gap-8">
+                <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                <a href="#" class="hover:text-white transition-colors">Terms</a>
+                <a href="#" class="hover:text-white transition-colors">Contact</a>
+            </div>
+        </footer>
+    </section>
+
+    <script>
+        // HLS Initialization
+        function initHls(id, src) {
+            const video = document.getElementById(id);
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(src);
+                hls.attachMedia(video);
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = src;
+            }
+        }
+
+        initHls('hls-video-1', 'https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8');
+        initHls('hls-video-2', 'https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8');
+        initHls('hls-video-3', 'https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8');
+
+        // BlurText Simulation
+        function splitAndAnimate(id) {
+            const el = document.getElementById(id);
+            const text = el.innerText;
+            el.innerHTML = '';
+            text.split(' ').forEach((word, i) => {
+                const span = document.createElement('span');
+                span.innerText = word + ' ';
+                span.className = 'blur-text-word';
+                span.style.transitionDelay = (i * 100) + 'ms';
+                el.appendChild(span);
+                setTimeout(() => span.classList.add('visible'), 100);
+            });
+        }
+
+        window.onload = () => {
+            splitAndAnimate('hero-title');
+            setTimeout(() => {
+                document.getElementById('hero-subtext').style.opacity = '1';
+                document.getElementById('hero-subtext').style.transition = 'all 1s ease';
+            }, 800);
+            setTimeout(() => {
+                document.getElementById('hero-btns').style.opacity = '1';
+                document.getElementById('hero-btns').style.transition = 'all 1s ease';
+            }, 1100);
+        };
+    </script>
 </body>
 </html>

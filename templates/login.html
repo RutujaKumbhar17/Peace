@@ -2,83 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Kai</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liquid-glass.css') }}">
 </head>
-<body class="login-body">
+<body class="apple-theme bg-black min-h-screen flex items-center justify-center p-6">
 
-    <div class="login-container fade-in-up">
-        <div class="login-header">
-            <h2>Welcome Back</h2>
-            <p>Continue your wellness journey with Kai</p>
+    <div class="liquid-glass rounded-[40px] p-12 max-w-md w-full border border-white/5">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl mb-2">Welcome Back</h2>
+            <p class="text-white/40 font-light">Continue your wellness journey with Kai</p>
         </div>
 
-        <form id="loginForm" class="login-form">
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="email" placeholder="Email Address" required>
+        <form id="loginForm" class="space-y-6">
+            <div class="relative group">
+                <i class="fas fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white/60 transition-colors"></i>
+                <input type="email" id="email" placeholder="Email Address" 
+                    class="w-full bg-white/[0.03] border border-white/10 rounded-full py-4 pl-14 pr-6 text-white outline-none focus:border-white/30 transition-all font-light" required>
             </div>
             
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="password" placeholder="Password" required>
+            <div class="relative group">
+                <i class="fas fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white/60 transition-colors"></i>
+                <input type="password" id="password" placeholder="Password" 
+                    class="w-full bg-white/[0.03] border border-white/10 rounded-full py-4 pl-14 pr-6 text-white outline-none focus:border-white/30 transition-all font-light" required>
             </div>
 
-            <div class="remember-me">
-                <input type="checkbox" id="remember">
-                <label for="remember">Remember me</label>
+            <div class="flex items-center gap-3 px-2">
+                <input type="checkbox" id="remember" class="accent-white">
+                <label for="remember" class="text-white/40 text-sm font-light">Remember me</label>
             </div>
 
-            <button type="submit" class="btn-primary full-width">Sign In</button>
+            <button type="submit" id="submitBtn" class="w-full bg-white text-black font-medium py-4 rounded-full hover:bg-white/90 transition-all flex items-center justify-center gap-2">
+                Sign In
+            </button>
         </form>
         
-        <div class="login-footer">
-            <p>Don't have an account? <a href="#">Create one</a></p>
+        <div class="mt-8 text-center text-sm">
+            <p class="text-white/40 font-light">Don't have an account? <a href="#" class="text-white hover:underline">Create one</a></p>
         </div>
     </div>
 
     <script>
-        // Professional Login Logic simulation
         const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const rememberCheckbox = document.getElementById('remember');
-
-        // Check if user info is saved
-        window.addEventListener('load', () => {
-            const savedEmail = localStorage.getItem('kai_email');
-            const savedPass = localStorage.getItem('kai_pass');
-            if (savedEmail) {
-                emailInput.value = savedEmail;
-                rememberCheckbox.checked = true;
-                // Optional: Auto-fill password if insecurely requested for demo
-                if (savedPass) passwordInput.value = atob(savedPass); 
-            }
-        });
+        const submitBtn = document.getElementById('submitBtn');
 
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
-            const btn = loginForm.querySelector('button');
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Signing in...';
-            btn.style.opacity = '0.8';
+            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Signing in...';
+            submitBtn.style.opacity = '0.8';
 
-            // Save credentials if requested (Frontend Simulation)
-            if (rememberCheckbox.checked) {
-                localStorage.setItem('kai_email', emailInput.value);
-                // Note: Storing passwords in localStorage is not secure for production apps, 
-                // but fulfills the request for this specific project demo.
-                localStorage.setItem('kai_pass', btoa(passwordInput.value)); 
-            } else {
-                localStorage.removeItem('kai_email');
-                localStorage.removeItem('kai_pass');
-            }
-
-            // Simulate API delay for professional feel
             setTimeout(() => {
                 window.location.href = "{{ url_for('home') }}";
-            }, 1500);
+            }, 1200);
         });
     </script>
 </body>

@@ -4,163 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Kai Companion</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .dashboard-container {
-            padding: 40px;
-            max-width: 1200px;
-            width: 100%;
-            height: 100vh;
-            overflow-y: auto;
-            position: relative;
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liquid-glass.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ["'Instrument Serif'", "serif"],
+                        body: ["'Barlow'", "sans-serif"],
+                    }
+                }
+            }
         }
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.06);
-            border-color: var(--primary-color);
-        }
-        .stat-card h4 {
-            color: #888;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1.5px;
-        }
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        .stat-icon {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 1.5rem;
-            opacity: 0.2;
-        }
-
-        /* Mood Section */
-        .mood-trend-container {
-            background: rgba(255,255,255,0.03);
-            border-radius: 20px;
-            padding: 30px;
-            margin-top: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .mood-bar-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 15px;
-            height: 150px;
-            margin-top: 20px;
-        }
-        .mood-bar {
-            flex: 1;
-            background: var(--primary-color);
-            border-radius: 5px 5px 0 0;
-            transition: height 1s ease-out;
-            position: relative;
-            min-height: 5px;
-        }
-        .mood-bar span {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
-            color: #888;
-        }
-
-        .recent-diary-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-        }
-        .recent-diary-item {
-            padding: 12px 15px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-        }
-        .recent-diary-item span:first-child { color: white; font-weight: 500; }
-        .recent-diary-item span:last-child { color: #555; font-size: 0.8rem; }
-        
-        .empty-dashboard-state { color: #444; text-align: center; padding: 40px; }
-    </style>
+    </script>
 </head>
-<body class="landing-body">
-    <div class="dashboard-container fade-in-up">
-        <div class="dashboard-header">
-            <a href="{{ url_for('home') }}" class="btn-back"><i class="fas fa-arrow-left"></i> Home</a>
-            <h1 class="header-text-large">Your Wellness Dashboard</h1>
-            <div style="width: 80px;"></div>
+<body class="apple-theme bg-black min-h-screen p-6 md:p-12 overflow-x-hidden">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="flex items-center justify-between mb-16">
+            <a href="{{ url_for('home') }}" class="text-white/40 hover:text-white transition-colors no-underline">
+                <i class="fas fa-arrow-left mr-2"></i> Home
+            </a>
+            <h1 class="text-4xl italic">Wellness Dashboard</h1>
+            <div class="w-10"></div> <!-- Spacer -->
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="liquid-glass rounded-[40px] p-10 border border-white/5 relative overflow-hidden">
+                <span class="text-[10px] uppercase tracking-widest text-white/30 mb-4 block">Total Reflections</span>
+                <div id="diary-count" class="text-5xl font-heading italic">0</div>
+                <i class="fas fa-book-open absolute right-8 bottom-8 text-white/5 text-4xl"></i>
+            </div>
+            
+            <div class="liquid-glass rounded-[40px] p-10 border border-white/5 relative overflow-hidden">
+                <span class="text-[10px] uppercase tracking-widest text-white/30 mb-4 block">Current Mood</span>
+                <div id="top-mood" class="text-5xl font-heading italic">Neutral</div>
+                <i class="fas fa-smile absolute right-8 bottom-8 text-white/5 text-4xl"></i>
+            </div>
+
+            <div class="liquid-glass rounded-[40px] p-10 border border-white/5 relative overflow-hidden">
+                <span class="text-[10px] uppercase tracking-widest text-white/30 mb-4 block">Last Active</span>
+                <div id="last-active" class="text-3xl font-heading italic mt-2">Never</div>
+                <i class="fas fa-clock absolute right-8 bottom-8 text-white/5 text-4xl"></i>
+            </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h4>Total Reflections</h4>
-                <div id="diary-count" class="stat-value">0</div>
-                <i class="fas fa-book-open stat-icon"></i>
-            </div>
-            <div class="stat-card">
-                <h4>Current Mood</h4>
-                <div id="top-mood" class="stat-value">Neutral</div>
-                <i class="fas fa-smile stat-icon"></i>
-            </div>
-            <div class="stat-card">
-                <h4>Last Interaction</h4>
-                <div id="last-active" class="stat-value" style="font-size: 1.5rem;">Never</div>
-                <i class="fas fa-clock stat-icon"></i>
-            </div>
-        </div>
-
-        <div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
-            <div class="mood-trend-container">
-                <h4>Mood Analytics</h4>
-                <p style="color:#666; font-size:0.85rem;">Dominant emotions from your last conversations.</p>
-                <div id="mood-bars" class="mood-bar-container">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="lg:col-span-2 liquid-glass rounded-[40px] p-12 border border-white/5">
+                <div class="flex items-center justify-between mb-10">
+                    <h3 class="text-3xl italic">Mood Analytics</h3>
+                    <span class="text-white/20 text-[10px] uppercase tracking-widest">Last Conversations</span>
+                </div>
+                <div id="mood-bars" class="flex items-end gap-6 h-[200px] mt-10">
                     <!-- Dynamic bars will be inserted here -->
                 </div>
             </div>
-            
-            <div class="mood-trend-container">
-                <h4>Recent Diary Entries</h4>
-                <div id="recent-diary-preview">
-                    <p class="empty-dashboard-state">No entries yet.</p>
+
+            <div class="liquid-glass rounded-[40px] p-12 border border-white/5">
+                <h3 class="text-2xl italic mb-10">Recent Entries</h3>
+                <div id="recent-diary-preview" class="space-y-4">
+                    <p class="text-white/20 font-light italic">No entries yet.</p>
                 </div>
-                <a href="{{ url_for('diary') }}" style="color:var(--primary-color); font-size:0.8rem; text-decoration:none;">View all entries →</a>
+                <a href="{{ url_for('diary') }}" class="mt-12 block text-white/40 hover:text-white transition-colors text-xs uppercase tracking-widest no-underline">
+                    View full diary <i class="fas fa-arrow-right ml-1"></i>
+                </a>
             </div>
         </div>
 
-        <div style="margin-top: 40px; text-align: center; color: #333; font-size: 0.8rem;">
-            <p>Kai Analytics V1.0 • Privacy Secured Locally & Gemini AI</p>
-        </div>
+        <footer class="mt-32 pt-12 border-t border-white/5 text-center">
+            <p class="text-[10px] text-white/10 uppercase tracking-[0.2em]">Kai Analytics V1.0 • Privacy Secured Locally & Gemini AI</p>
+        </footer>
     </div>
 
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

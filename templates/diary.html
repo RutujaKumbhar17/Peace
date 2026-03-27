@@ -4,71 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Diary - Kai Companion</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/liquid-glass.css') }}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ["'Instrument Serif'", "serif"],
+                        body: ["'Barlow'", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Small override for general style Conflict */
-        body { display: block; height: 100vh; overflow: hidden; }
+        .note-item.active { @apply bg-white/10; }
+        .sidebar { @apply border-r border-white/5; }
+        .note-list::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body>
-    <div class="diary-wrapper">
-        <!-- Sidebar -->
-        <aside class="diary-sidebar">
-            <div class="sidebar-header">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <a href="{{ url_for('home') }}" class="btn-back" style="font-size: 0.9rem;"><i class="fas fa-arrow-left"></i> Home</a>
-                    <span style="font-weight:bold; color:#008069;">My Diary</span>
-                </div>
-                <button id="new-note-btn" class="new-note-btn">
-                    <i class="fas fa-plus"></i> New Note
-                </button>
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Search notes...">
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:#666;">
-                    <span>Sort by Date</span>
-                    <i class="fas fa-sort-amount-down" id="sort-toggle" style="cursor:pointer;"></i>
-                </div>
-            </div>
-            <div id="note-list" class="note-list">
-                <!-- Notes will be injected here -->
-            </div>
-        </aside>
+<body class="apple-theme bg-black h-screen flex overflow-hidden">
 
-        <!-- Main Editor -->
-        <main class="diary-main">
-            <div id="editor-view" style="display: none; flex-direction: column; height: 100%;">
-                <div class="editor-toolbar">
-                    <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
-                    <button class="toolbar-btn" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
-                    <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullets"><i class="fas fa-list-ul"></i></button>
-                    <div style="flex:1;"></div>
-                    <button class="toolbar-btn" id="delete-note-btn" title="Delete Note" style="color:#e74c3c;"><i class="fas fa-trash"></i></button>
+    <!-- Sidebar -->
+    <aside class="w-80 sidebar flex flex-col bg-black/20 backdrop-blur-xl">
+        <div class="p-6 border-b border-white/5">
+            <div class="flex items-center justify-between mb-8">
+                <a href="{{ url_for('home') }}" class="text-white/40 hover:text-white transition-colors text-xs no-underline">
+                    <i class="fas fa-arrow-left mr-1"></i> Home
+                </a>
+                <span class="text-xs font-heading italic text-white/80">My Diary</span>
+            </div>
+            <button id="new-note-btn" class="w-full liquid-glass-strong py-3 rounded-full flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform text-sm font-medium">
+                <i class="fas fa-plus text-xs"></i> New Note
+            </button>
+            <div class="mt-6 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs"></i>
+                <input type="text" id="search-input" placeholder="Search notes..." 
+                    class="w-full bg-white/[0.03] border border-white/5 rounded-full py-2 pl-10 pr-4 text-xs outline-none focus:border-white/20 transition-all font-light">
+            </div>
+        </div>
+        <div id="note-list" class="flex-1 overflow-y-auto note-list">
+            <!-- Notes will be injected here -->
+        </div>
+    </aside>
+
+    <!-- Main Editor -->
+    <main class="flex-1 flex flex-col items-center justify-center p-12 overflow-hidden bg-black/10">
+        <div id="editor-view" class="w-full max-w-3xl h-full flex flex-col liquid-glass rounded-[40px] p-12 border border-white/5" style="display: none;">
+            <div class="flex items-center justify-between mb-10 pb-6 border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <button class="text-white/40 hover:text-white transition-colors" onclick="document.execCommand('bold', false, null)"><i class="fas fa-bold"></i></button>
+                    <button class="text-white/40 hover:text-white transition-colors" onclick="document.execCommand('italic', false, null)"><i class="fas fa-italic"></i></button>
+                    <button class="text-white/40 hover:text-white transition-colors" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="fas fa-list-ul"></i></button>
                 </div>
-                <div class="editor-content">
-                    <input type="text" id="note-title" class="note-title-input" placeholder="Untitled Note">
-                    <div id="note-tags" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <!-- Tags will be injected here -->
-                        <div id="tag-input-container" style="display: flex; align-items: center; gap: 5px;">
-                            <input type="text" id="tag-input" placeholder="+ Add tag" style="background:#222; border:1px solid #333; border-radius:5px; padding:3px 8px; font-size:0.75rem; color:white; width:80px;">
-                        </div>
-                    </div>
-                    <div id="rich-editor" class="rich-editor" contenteditable="true" placeholder="Start writing here..."></div>
+                <button id="delete-note-btn" class="text-red-500/50 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto">
+                <input type="text" id="note-title" placeholder="Untitled Note" 
+                    class="w-full bg-transparent border-none text-4xl font-heading italic outline-none mb-6">
+                
+                <div id="note-tags" class="flex flex-wrap gap-2 mb-8">
+                    <!-- Tags will be injected here -->
+                    <input type="text" id="tag-input" placeholder="+ Add tag" 
+                        class="bg-white/5 border border-white/5 rounded-full px-4 py-1 text-[10px] text-white/60 outline-none w-24 focus:border-white/20">
                 </div>
-                <div class="save-status" id="save-status">Saved</div>
+
+                <div id="rich-editor" contenteditable="true" 
+                    class="w-full h-full bg-transparent border-none text-white/80 outline-none font-light text-lg leading-relaxed" 
+                    placeholder="Start writing here..."></div>
             </div>
 
-            <!-- Empty State -->
-            <div id="empty-state" class="empty-state">
-                <i class="fas fa-feather-alt"></i>
-                <h2>Your thoughts deserve a space.</h2>
-                <p>Click "New Note" to start your first entry.</p>
+            <div class="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] text-white/20 uppercase tracking-widest">
+                <span id="save-status">All changes saved</span>
             </div>
-        </main>
-    </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="text-center opacity-40">
+            <div class="liquid-glass-strong w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8">
+                <i class="fas fa-feather-alt text-3xl"></i>
+            </div>
+            <h2 class="text-3xl mb-4 italic">Your thoughts deserve a space.</h2>
+            <p class="font-light">Click "New Note" to start your first entry.</p>
+        </div>
+    </main>
 
     <script src="{{ url_for('static', filename='js/diary.js') }}"></script>
 </body>

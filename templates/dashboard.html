@@ -13,6 +13,7 @@
             width: 100%;
             height: 100vh;
             overflow-y: auto;
+            position: relative;
         }
         .dashboard-header {
             display: flex;
@@ -22,55 +23,146 @@
         }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
+            margin-bottom: 30px;
         }
         .stat-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
             padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.06);
+            border-color: var(--primary-color);
         }
         .stat-card h4 {
             color: #888;
             margin-bottom: 15px;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
         }
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            color: #008069;
+            color: var(--primary-color);
         }
+        .stat-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 1.5rem;
+            opacity: 0.2;
+        }
+
+        /* Mood Section */
+        .mood-trend-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .mood-bar-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            height: 150px;
+            margin-top: 20px;
+        }
+        .mood-bar {
+            flex: 1;
+            background: var(--primary-color);
+            border-radius: 5px 5px 0 0;
+            transition: height 1s ease-out;
+            position: relative;
+            min-height: 5px;
+        }
+        .mood-bar span {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .recent-diary-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        .recent-diary-item {
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .recent-diary-item span:first-child { color: white; font-weight: 500; }
+        .recent-diary-item span:last-child { color: #555; font-size: 0.8rem; }
+        
+        .empty-dashboard-state { color: #444; text-align: center; padding: 40px; }
     </style>
 </head>
 <body class="landing-body">
-    <div class="dashboard-container">
+    <div class="dashboard-container fade-in-up">
         <div class="dashboard-header">
             <a href="{{ url_for('home') }}" class="btn-back"><i class="fas fa-arrow-left"></i> Home</a>
-            <h1 class="header-text-large">Your Dashboard</h1>
+            <h1 class="header-text-large">Your Wellness Dashboard</h1>
             <div style="width: 80px;"></div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <h4>Total Conversations</h4>
-                <div class="stat-value">24</div>
+                <h4>Total Reflections</h4>
+                <div id="diary-count" class="stat-value">0</div>
+                <i class="fas fa-book-open stat-icon"></i>
             </div>
             <div class="stat-card">
-                <h4>Mood Indicator</h4>
-                <div class="stat-value">Mostly Happy</div>
+                <h4>Current Mood</h4>
+                <div id="top-mood" class="stat-value">Neutral</div>
+                <i class="fas fa-smile stat-icon"></i>
             </div>
             <div class="stat-card">
-                <h4>Diary Entries</h4>
-                <div class="stat-value">12</div>
+                <h4>Last Interaction</h4>
+                <div id="last-active" class="stat-value" style="font-size: 1.5rem;">Never</div>
+                <i class="fas fa-clock stat-icon"></i>
             </div>
         </div>
 
-        <div style="margin-top: 40px; text-align: center; color: #666;">
-            <p>More detailed analytics coming soon...</p>
+        <div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+            <div class="mood-trend-container">
+                <h4>Mood Analytics</h4>
+                <p style="color:#666; font-size:0.85rem;">Dominant emotions from your last conversations.</p>
+                <div id="mood-bars" class="mood-bar-container">
+                    <!-- Dynamic bars will be inserted here -->
+                </div>
+            </div>
+            
+            <div class="mood-trend-container">
+                <h4>Recent Diary Entries</h4>
+                <div id="recent-diary-preview">
+                    <p class="empty-dashboard-state">No entries yet.</p>
+                </div>
+                <a href="{{ url_for('diary') }}" style="color:var(--primary-color); font-size:0.8rem; text-decoration:none;">View all entries →</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center; color: #333; font-size: 0.8rem;">
+            <p>Kai Analytics V1.0 • Privacy Secured Locally & Gemini AI</p>
         </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>

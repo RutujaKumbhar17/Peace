@@ -99,6 +99,34 @@ def companion():
     """Render the Main Kai Interface (Previously Index)"""
     return render_template('call.html')
 
+@app.route('/api/mood-stats')
+def mood_stats():
+    """Process emotion logs and return aggregated stats for the dashboard"""
+    if not os.path.exists(LOG_FILE):
+        return json.dumps({"status": "no_data", "top_emotions": []})
+    
+    try:
+        emotion_counts = {}
+        with open(LOG_FILE, 'r') as f:
+            reader = csv.reader(f)
+            next(reader, None)
+            for row in reader:
+                if len(row) >= 4:
+                    emotion = row[3]
+                    emotion_counts[emotion] = emotion_counts.get(emotion, 0) + 1
+        
+        # Sort and get top 3
+        sorted_emotions = sorted(emotion_counts.items(), key=lambda x: x[1], reverse=True)
+        top_3 = [{"emotion": e, "count": c} for e, c in sorted_emotions[:3]]
+        
+        return json.dumps({
+            "status": "success",
+            "top_emotions": top_3,
+            "total_logs": sum(emotion_counts.values())
+        })
+    except Exception as e:
+        return json.dumps({"status": "error", "message": str(e)})
+
 # --- HELPER FUNCTIONS ---
 # ... (Keep all existing helper functions: cleanup_audio_folder, generate_tts_audio, process_browser_command, load_emotion_logs, save_chat_log, load_chat_log, calculate_weighted_emotion UNCHANGED) ...
 

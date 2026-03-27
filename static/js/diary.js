@@ -99,22 +99,31 @@ function createNewNote() {
 }
 
 function selectNote(id) {
-    activeNoteId = id;
-    const note = notes.find(n => n.id === id);
-    if (!note) return;
-
-    // UI Updates
-    document.querySelectorAll('.note-snippet').forEach(s => s.classList.remove('active'));
-    renderNoteList(); // Refresh list to show active
-
-    emptyState.style.display = 'none';
-    editorView.style.display = 'flex';
+    if (activeNoteId === id) return; // Already selected
     
-    noteTitle.value = note.title;
-    richEditor.innerHTML = note.content;
-    renderTags(note.tags);
+    // Add fade-out transition
+    editorView.style.opacity = '0';
     
-    saveStatus.innerText = 'Saved';
+    setTimeout(() => {
+        activeNoteId = id;
+        const note = notes.find(n => n.id === id);
+        if (!note) return;
+
+        // UI Updates
+        document.querySelectorAll('.note-snippet').forEach(s => s.classList.remove('active'));
+        renderNoteList(); 
+
+        emptyState.style.display = 'none';
+        editorView.style.display = 'flex';
+        
+        noteTitle.value = note.title;
+        richEditor.innerHTML = note.content;
+        renderTags(note.tags);
+        
+        // Fade back in
+        editorView.style.opacity = '1';
+        saveStatus.innerText = 'Saved';
+    }, 150);
 }
 
 function updateNote() {
@@ -202,12 +211,25 @@ function setupEventListeners() {
         if (e.key === 'Enter') addTag(tagInput.value);
     };
 
-    // Toolbar logic
+    // Toolbar logic (Modern approach: Use selection)
     toolbarBtns.forEach(btn => {
         btn.onmousedown = (e) => {
-            e.preventDefault(); // Prevent losing focus on editor
+            e.preventDefault(); 
             const command = btn.getAttribute('data-command');
-            document.execCommand(command, false, null);
+            
+            // Expert Tip: Add specific styling to the active button
+            btn.classList.add('active');
+            setTimeout(() => btn.classList.remove('active'), 200);
+
+            if (command === 'createLink') {
+                const url = prompt("Enter the URL:");
+                if (url) document.execCommand(command, false, url);
+            } else if (command === 'formatBlock') {
+                document.execCommand(command, false, '<blockquote>');
+            } else {
+                document.execCommand(command, false, null);
+            }
+            
             richEditor.focus();
             updateNote();
         };

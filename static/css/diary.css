@@ -19,32 +19,43 @@
 .sidebar {
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100vh;
-}
-
-#entries-list {
-    max-height: calc(100vh - 350px); /* Adjust based on header/footer size */
-    overflow-y: auto;
-}
-
-.entry-item {
-    padding: 20px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
+    z-index: 10;
     position: relative;
 }
 
+#entries-list {
+    max-height: calc(100vh - 350px); /* Ensure aura glows don't cover video */
+}
+
+.aura-glow {
+    z-index: -5;
+}
+
+.entry-item {
+    padding: 25px;
+    border-radius: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
 .entry-item:hover {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px) scale(1.02);
 }
 
 .entry-item.active {
-    background: rgba(168, 85, 247, 0.1);
-    border-color: rgba(168, 85, 247, 0.2);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 15px 40px rgba(168, 85, 247, 0.15);
+    transform: scale(1.02);
 }
 
 .edit-icon {
@@ -259,4 +270,23 @@
 }
 .syncing {
     animation: pulse 1s infinite;
+}
+
+/* Meditative Video Background */
+.diary-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    opacity: 1; /* Maximum visibility */
+    z-index: -10; /* Behind everything */
+    pointer-events: none;
+    filter: brightness(0.5) saturate(1.2); /* Dimmed for content readability */
+}
+
+/* Ensure aura glows don't cover video */
+.aura-glow {
+    z-index: -5;
 }

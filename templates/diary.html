@@ -26,7 +26,18 @@
         }
     </script>
 </head>
-<body class="apple-theme bg-black h-screen flex overflow-hidden">
+<body class="apple-theme h-screen flex overflow-hidden !bg-transparent">
+
+    <!-- Meditative Background Layering -->
+    <div class="fixed inset-0 bg-black -z-50"></div>
+    <video id="diary-bg-video" class="diary-video" 
+        autoplay muted loop playsinline preload="auto"
+        poster="/static/img/meditative_waves_bg.png">
+        <source src="{{ url_for('static', filename='assets/diary/bg_diary.mp4') }}" type="video/mp4">
+    </video>
+
+    <!-- Background Music Track -->
+    <audio id="bg-music" src="{{ url_for('static', filename='assets/diary/bg_music_diary.mp3') }}" loop></audio>
 
     <!-- Atmospheric Aura Glows -->
     <div class="aura-glow aura-primary"></div>
@@ -36,13 +47,13 @@
     <aside class="w-80 sidebar flex flex-col bg-black/40 backdrop-blur-2xl border-r border-white/5">
         <div class="p-8 pb-4">
             <h1 class="text-3xl font-heading italic mb-6">Journal History</h1>
-            <button id="new-entry-btn" class="w-full liquid-glass-strong py-4 rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02] transition-all text-sm font-medium border border-white/10">
+            <button id="new-entry-btn" class="w-full liquid-glass-strong py-4 rounded-full flex items-center justify-center gap-3 hover:scale-[1.02] transition-all text-sm font-medium border border-white/10">
                 <i class="fas fa-pen-nib text-xs"></i> New Journal Entry
             </button>
             <div class="mt-6 relative">
                 <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs"></i>
                 <input type="text" id="search-entries" placeholder="Search your past..." 
-                    class="w-full bg-white/[0.03] border border-white/5 rounded-xl py-3 pl-11 pr-4 text-xs outline-none focus:border-white/20 transition-all">
+                    class="w-full bg-white/[0.03] border border-white/10 rounded-full py-3 pl-11 pr-4 text-xs outline-none focus:border-white/30 transition-all">
             </div>
         </div>
         
@@ -55,20 +66,20 @@
         </div>
 
         <div class="p-6 border-t border-white/5 bg-black/20">
-            <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-white/40 mb-4">
+            <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-white/40 mb-4 px-2">
                 <span>Reminders</span>
                 <i class="fas fa-bell"></i>
             </div>
             <div class="flex items-center gap-3">
-                <input type="time" id="reminder-time" class="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-xs text-white outline-none">
-                <button id="set-reminder" class="text-[10px] bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">Set</button>
+                <input type="time" id="reminder-time" class="bg-white/5 border border-white/10 rounded-full px-4 py-2 text-xs text-white outline-none flex-1">
+                <button id="set-reminder" class="text-[10px] bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-colors border border-white/10">Set</button>
             </div>
-            <button id="request-notif-btn" class="w-full mt-3 text-[9px] uppercase tracking-widest opacity-30 hover:opacity-100 transition-all">Enable Notifications</button>
+            <button id="request-notif-btn" class="w-full mt-4 text-[9px] uppercase tracking-widest opacity-30 hover:opacity-100 transition-all">Enable Notifications</button>
         </div>
     </aside>
 
     <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col relative overflow-hidden bg-black/20">
+    <main class="flex-1 flex flex-col relative overflow-hidden bg-black/20 z-10">
         
         <!-- Dashboard Tabs -->
         <nav class="flex items-center justify-between px-12 py-6 z-20">
@@ -88,12 +99,12 @@
                 
                 <!-- Template Picker -->
                 <div id="template-picker" class="flex flex-wrap gap-3 mb-12 justify-center">
-                    <button onclick="selectTemplate('Custom Note')" class="temp-btn liquid-glass px-6 py-3 rounded-2xl text-xs font-medium hover:bg-white/5 border border-white/10 transition-all active">Custom Note</button>
-                    <button onclick="selectTemplate('Daily Reflection')" class="temp-btn liquid-glass px-6 py-3 rounded-2xl text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Daily Reflection</button>
-                    <button onclick="selectTemplate('Productivity')" class="temp-btn liquid-glass px-6 py-3 rounded-2xl text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Productivity</button>
-                    <button onclick="selectTemplate('Mood Tracker')" class="temp-btn liquid-glass px-6 py-3 rounded-2xl text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Mood Tracker</button>
-                    <button onclick="selectTemplate('Weekly Growth')" class="temp-btn liquid-glass px-6 py-3 rounded-2xl text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Weekly Growth</button>
-                    <button onclick="selectTemplate('Future Vision')" class="temp-btn liquid-glass px-6 py-3 rounded-2xl text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Future Vision</button>
+                    <button onclick="selectTemplate('Custom Note')" class="temp-btn liquid-glass px-6 py-3 rounded-full text-xs font-medium hover:bg-white/5 border border-white/10 transition-all active">Custom Note</button>
+                    <button onclick="selectTemplate('Daily Reflection')" class="temp-btn liquid-glass px-6 py-3 rounded-full text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Daily Reflection</button>
+                    <button onclick="selectTemplate('Productivity')" class="temp-btn liquid-glass px-6 py-3 rounded-full text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Productivity</button>
+                    <button onclick="selectTemplate('Mood Tracker')" class="temp-btn liquid-glass px-6 py-3 rounded-full text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Mood Tracker</button>
+                    <button onclick="selectTemplate('Weekly Growth')" class="temp-btn liquid-glass px-6 py-3 rounded-full text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Weekly Growth</button>
+                    <button onclick="selectTemplate('Future Vision')" class="temp-btn liquid-glass px-6 py-3 rounded-full text-xs font-medium hover:bg-white/5 border border-white/10 transition-all">Future Vision</button>
                 </div>
 
                 <!-- Main Form Body -->
@@ -113,7 +124,9 @@
                             Last Synced: <span id="sync-time">Never</span>
                         </div>
                         <div class="flex gap-4">
-                            <button id="delete-btn" class="text-red-500/40 hover:text-red-500 transition-all text-sm px-6 py-2 rounded-xl bg-red-500/5 hover:bg-red-500/10 hidden">Delete</button>
+                            <button id="delete-btn" class="bg-white text-red-600 px-10 py-3 rounded-2xl font-bold hover:scale-[1.05] transition-all shadow-xl hidden flex items-center gap-2">
+                                <i class="fas fa-trash-alt text-xs"></i> Delete Entry
+                            </button>
                             <button id="save-btn" class="bg-white text-black px-10 py-3 rounded-2xl font-bold hover:scale-[1.05] transition-all shadow-xl">Save Note</button>
                         </div>
                     </div>

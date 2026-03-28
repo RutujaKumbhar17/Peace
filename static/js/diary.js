@@ -407,7 +407,30 @@ function startReminderCheck() {
     }, 30000);
 }
 
+// --- AMBIENT SOUND ---
+function setupAmbientSound() {
+    const video = document.getElementById('diary-bg-video');
+    const audio = document.getElementById('bg-music');
+
+    // Setup initial state
+    video.muted = true; 
+    audio.volume = 0.25; // User requested 25% volume
+    audio.muted = true; // MUST start muted for autoplay compliance
+
+    // Browsers block auto-unmute unless user has interacted. 
+    const startAudio = () => {
+        audio.muted = false;
+        audio.play().catch(err => {
+            console.warn("Audio play failed on gesture:", err);
+        });
+    };
+
+    document.addEventListener('click', startAudio, { once: true });
+    document.addEventListener('keydown', startAudio, { once: true });
+}
+
 // --- EVENTS ---
+setupAmbientSound();
 document.getElementById('new-entry-btn').onclick = () => {
     activeEntryId = null;
     entryTitle.value = '';

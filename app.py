@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, send_from_directory
 from flask_socketio import SocketIO, emit
 from camera_utils import analyze_emotion_from_frame, LOG_FILE, BASE_DIR
 import pyttsx3 
@@ -12,6 +12,8 @@ from config import apikey, model_name
 import webbrowser
 import sqlite3
 from collections import deque
+from datetime import datetime, timedelta
+import requests
 
 DB_PATH = os.path.join(BASE_DIR, 'logs', 'peace.db')
 
@@ -38,6 +40,12 @@ app.config['STATIC_URL_PATH'] = '/static'
 app.config['SECRET_KEY'] = 'kai_secret_key'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+# --- OpenRouter (KAI) Config ---
+OPENROUTER_API_KEY = ""
+OPENROUTER_MODEL = "openai/gpt-3.5-turbo"
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+# (Gemini Client left for reference, but logic is replaced)
 client = genai.Client(api_key=apikey)
 
 # ... (Keep existing Safety Settings & System Instructions unchanged) ...
@@ -142,6 +150,258 @@ def mood_stats():
         })
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
+
+@app.route('/api/dashboard-data')
+def dashboard_data():
+    """Aggregated data for the new Bento Dashboard"""
+    data = {
+        "mood_distribution": {},
+        "glow_gallery": [],
+        "streak": 0,
+        "reflection": "Always find something to be grateful for."
+    }
+    
+    # 1. Mood Distribution & Glow Gallery (from Logs)
+    if os.path.exists(LOG_FILE):
+        try:
+            with open(LOG_FILE, 'r') as f:
+                reader = csv.reader(f)
+                next(reader, None) # Skip header
+                logs = list(reader)
+                
+                dates = set()
+                for row in logs:
+                    if len(row) >= 5:
+                        emotion = row[3]
+                        score = float(row[4])
+                        date = row[1]
+                        dates.add(date)
+                        
+                        # Distribution
+                        data["mood_distribution"][emotion] = data["mood_distribution"].get(emotion, 0) + 1
+                        
+                        # Distribution
+                        data["mood_distribution"][emotion] = data["mood_distribution"].get(emotion, 0) + 1
+                        
+                        # Note: We no longer append text logs to glow_gallery here 
+                        # to keep the gallery strictly visual.
+                
+                # 2. Weekly Mood Data (for Emotional Balance)
+                weekly_moods = {"labels": [], "scores": []}
+                recent_logs = logs[-14:] # Get last 14 entries for better trend
+                for row in recent_logs:
+                    if len(row) >= 5:
+                        # Simplify timestamp for display
+                        t = datetime.fromtimestamp(float(row[0])).strftime("%H:%M")
+                        weekly_moods["labels"].append(t)
+                        weekly_moods["scores"].append(round(float(row[4]) * 100, 1))
+                data["weekly_moods"] = weekly_moods
+
+                # 3. Calendar Events (Days Logged)
+                data["calendar_events"] = [{"title": "Sanctuary Visited", "start": d, "display": "background", "color": "#967BB6"} for d in sorted(list(dates))]
+
+                # 4. Sprout Streak Logic
+                if dates:
+                    current_streak = 0
+                    check_date = datetime.now().date()
+                    sorted_dates = sorted(list(dates), reverse=True)
+                    last_log_date = datetime.strptime(sorted_dates[0], "%Y-%m-%d").date()
+                    
+                    if last_log_date < check_date - timedelta(days=1):
+                         current_streak = 0
+                    else:
+                        for d_str in sorted_dates:
+                            d = datetime.strptime(d_str, "%Y-%m-%d").date()
+                            if d == last_log_date:
+                                current_streak += 1
+                                last_log_date -= timedelta(days=1)
+                            else:
+                                break
+                    data["streak"] = current_streak
+        except Exception as e:
+            print(f"Error processing logs for dashboard: {e}")
+
+    # 3. Reflection (Random Diary Snippet)
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute('SELECT content_json FROM diary_entries ORDER BY RANDOM() LIMIT 5')
+            rows = cursor.fetchall()
+            for row in rows:
+                content = json.loads(row['content_json'])
+                # Look for gratitude-like sentences
+                for key, val in content.items():
+                    if isinstance(val, str) and ("grateful" in val.lower() or "happy" in val.lower() or "good" in val.lower()):
+                        data["reflection"] = val
+                        break
+                if data["reflection"] != "Always find something to be grateful for.":
+                    break
+    except Exception as e:
+        print(f"Error fetching reflection: {e}")
+
+    # 4. Joy Gallery Images (Legacy static/joy_gallery + New captured_frames/happy)
+    JOY_DIR = os.path.join(app.root_path, 'static', 'joy_gallery')
+    if os.path.exists(JOY_DIR):
+        images = glob.glob(os.path.join(JOY_DIR, "*"))
+        for img in images:
+            if img.lower().endswith(('.png', '.jpg', '.jpeg')):
+                data["glow_gallery"].append({
+                    "type": "image",
+                    "url": url_for('static', filename=f'joy_gallery/{os.path.basename(img)}')
+                })
+    
+    # 5. Real Happy Captures (Faceography)
+    CAPTURES_DIR = os.path.join(BASE_DIR, 'captured_frames')
+    if os.path.exists(CAPTURES_DIR):
+        # Find all files with "happy" in the name
+        happy_files = glob.glob(os.path.join(CAPTURES_DIR, "*happy*"))
+        # Sort by most recent
+        happy_files.sort(key=os.path.getmtime, reverse=True)
+        for img_path in happy_files[:10]: # Limit to 10
+            filename = os.path.basename(img_path)
+            # Use our new /captures/ route
+            data["glow_gallery"].append({
+                "type": "capture",
+                "url": f"/captures/{filename}",
+                "date": time.strftime("%b %d", time.localtime(os.path.getmtime(img_path)))
+            })
+
+    # 6. Fallback/Inspiration Gallery (if empty)
+    if not data["glow_gallery"]:
+        placeholders = [
+            {"url": "https://images.unsplash.com/photo-1518199266791-5375a02c9b24?auto=format&fit=crop&q=80&w=400", "date": "Ocean Peace"},
+            {"url": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=400", "date": "Forest Whisper"},
+            {"url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=400", "date": "Golden Valley"},
+            {"url": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=400", "date": "Alpine Calm"},
+            {"url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=400", "date": "Sunlit Woods"}
+        ]
+        for p in placeholders:
+            data["glow_gallery"].append({
+                "type": "placeholder",
+                "url": p["url"],
+                "date": p["date"]
+            })
+
+    # 7. AI Activity Suggestions
+    top_mood = "Neutral"
+    if data["mood_distribution"]:
+        top_mood = max(data["mood_distribution"], key=data["mood_distribution"].get)
+    
+    data["top_mood"] = top_mood
+    data["activity_suggestions"] = []
+    
+    # Calculate True Streak (Consecutive Days)
+    if os.path.exists(LOG_FILE):
+        try:
+            with open(LOG_FILE, 'r') as f:
+                reader = csv.reader(f)
+                next(reader, None)
+                dates = sorted(list(set(row[1] for row in reader)), reverse=True)
+                if dates:
+                    current_streak = 0
+                    check_date = datetime.now().date()
+                    
+                    # If no log today, check from yesterday
+                    last_log_date = datetime.strptime(dates[0], "%Y-%m-%d").date()
+                    if last_log_date < check_date - timedelta(days=1):
+                         current_streak = 0
+                    else:
+                        for d_str in dates:
+                            d = datetime.strptime(d_str, "%Y-%m-%d").date()
+                            if d == last_log_date:
+                                current_streak += 1
+                                last_log_date -= timedelta(days=1)
+                            else:
+                                break
+                    data["streak"] = current_streak
+        except Exception as e:
+            print(f"Streak Error: {e}")
+
+    try:
+        suggestion_prompt = (
+            f"The user, Rutuja, has been feeling '{top_mood}' lately. "
+            f"As her soulful AI companion, suggest 3 fresh, poetic, and modern mindfulness activities. "
+            f"Avoid clichés. Use evocative language (e.g., 'sip the silence', 'trace the grain of the day'). "
+            f"Keep each under 10 words. Return ONLY a JSON list of strings."
+        )
+        response = client.models.generate_content(
+            model=model_name,
+            contents=suggestion_prompt,
+            config={'response_mime_type': 'application/json'}
+        )
+        data["activity_suggestions"] = json.loads(response.text)
+    except Exception as e:
+        print(f"Error generating AI suggestions: {e}")
+        # Fallback
+        fallbacks = {
+            "happy": ["Share your joy with a friend", "Write a gratitude note", "Listen to upbeat music"],
+            "sad": ["Gentle stretching", "Deep breathing", "Sipping warm tea"],
+            "angry": ["Cool water on face", "Quick walk outside", "Counting to 10 slowly"]
+        }
+        data["activity_suggestions"] = fallbacks.get(top_mood.lower(), ["Deep breath", "Mindful moment", "Stretch"])
+
+    return json.dumps(data)
+
+def get_kai_response(messages):
+    """Call OpenRouter API to get a response from Kai"""
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {"model": OPENROUTER_MODEL, "messages": messages}
+    try:
+        response = requests.post(OPENROUTER_URL, headers=headers, json=data, timeout=10)
+        res_json = response.json()
+        if 'choices' in res_json:
+            return res_json['choices'][0]['message']['content'].strip()
+        print(f"OpenRouter Error: {res_json}")
+        return "I'm having trouble thinking right now."
+    except Exception as e:
+        print(f"Request Error: {e}")
+        return "I'm having trouble thinking right now."
+
+@app.route('/api/kai-insight')
+def kai_insight():
+    """Generate a personalized 'Seen' message from Kai based on user context"""
+    history = load_chat_log()
+    last_user_msg = "Nothing yet"
+    for turn in reversed(list(history)):
+        if turn['role'] == 'user':
+            last_user_msg = turn['parts'][0]
+            break
+            
+    # Get last emotion
+    last_mood = "Neutral"
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, 'r') as f:
+            reader = csv.reader(f)
+            rows = list(reader)
+            if len(rows) > 1:
+                last_mood = rows[-1][3]
+
+    insight_prompt = (
+        f"User context: Last mood observed: {last_mood}. Last thing they said: '{last_user_msg}'. "
+        f"As Rutuja's soulful companion, write a 1-sentence, 'fresh' and poetic 'Seen' insight. "
+        f"Make it feel like a whisper of wisdom or a warm embrace. Avoid overused therapy-speak. "
+        f"Keep it under 18 words and deeply personal."
+    )
+    
+    messages = [
+        {"role": "system", "content": "You are Kai, Rutuja's soulful AI companion. Be poetic and fresh."},
+        {"role": "user", "content": insight_prompt}
+    ]
+    
+    insight_text = get_kai_response(messages)
+    return json.dumps({"insight": insight_text})
+
+
+@app.route('/captures/<path:filename>')
+def serve_capture(filename):
+    """Serve images from the captured_frames directory"""
+    CAPTURES_DIR = os.path.join(BASE_DIR, 'captured_frames')
+    return send_from_directory(CAPTURES_DIR, filename)
+
 
 # --- DIARY API ---
 
@@ -369,31 +629,32 @@ def handle_chat(data):
             if sid not in conversation_history:
                 conversation_history[sid] = load_chat_log()
             current_mood = calculate_weighted_emotion(sid)
-            system_context = f"[USER STATE: {current_mood}]. "
-            full_prompt = system_context + user_msg
-            current_history = list(conversation_history[sid])
+            
+            # Format Context History (Remember last 6 turns = 12 messages)
+            messages = [{"role": "system", "content": system_instruction.replace("[USER STATE: Happy]", f"[USER STATE: {current_mood}]")}]
+            
+            # Convert existing parts history to OpenAI format
+            # We take the last 12 entries (6 turns)
+            raw_history = list(conversation_history[sid])[-12:] 
+            for turn in raw_history:
+                role = "user" if turn['role'] == 'user' else "assistant"
+                messages.append({"role": role, "content": turn['parts'][0]})
+            
+            # Add current message
+            # The current current_mood is already in the system check, but we can also tag it here if needed
+            messages.append({"role": "user", "content": f"[USER STATE: {current_mood}] {user_msg}"})
+            
             try:
-                print(f"[GEMINI] Sending: {full_prompt}")
+                print(f"[OPENROUTER] Sending context (6 turns): {user_msg}")
+                ai_reply = get_kai_response(messages)
+                print(f"[OPENROUTER] Received: {ai_reply}")
                 
-                # Using the modern library (google-genai)
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=full_prompt,
-                    config={
-                        'system_instruction': system_instruction,
-                        'safety_settings': safety_settings
-                    }
-                )
-                
-                ai_reply = response.text
-                print(f"[GEMINI] Received: {ai_reply}")
-                
+                # Update Persistence Store
                 conversation_history[sid].append({'role': 'user', 'parts': [user_msg]})
-                conversation_history[sid].append({'role': 'model', 'parts': [ai_reply]})
+                conversation_history[sid].append({'role': 'assistant', 'parts': [ai_reply]})
                 save_chat_log(conversation_history[sid])
             except Exception as e:
-                print(f"Gemini Error (General): {e}")
-                # Fallback response if the SDK fails
+                print(f"OpenRouter Error (General): {e}")
                 ai_reply = "I'm having trouble thinking right now."
         
         print(f"[SOCKET] Emitting chat_response...")

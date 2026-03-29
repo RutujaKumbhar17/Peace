@@ -15,3 +15,10 @@ def test_model():
 
 if __name__ == '__main__':
     test_model()
+    except Exception as e:
+        import traceback
+        print(f"FAILED: {e}\n{traceback.format_exc()}")
+        return False
+
+if __name__ == '__main__':
+    test_model()

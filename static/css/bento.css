@@ -1,0 +1,207 @@
+/* Bento Grid & Liquid Glass Dashboard Styles */
+
+:root {
+  --sage-green: rgba(138, 154, 134, 0.4);
+  --muted-lavender: rgba(150, 150, 190, 0.4);
+  --soft-gold: rgba(218, 165, 32, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --golden-glow: 0 0 25px rgba(255, 223, 0, 0.4);
+}
+
+body {
+    background: #050505;
+    color: #fff;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* --- Animated Background Blobs --- */
+.blob-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    filter: blur(100px);
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    animation: move 20s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.blob-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--sage-green);
+    top: -100px;
+    left: -100px;
+}
+
+.blob-2 {
+    width: 600px;
+    height: 600px;
+    background: var(--muted-lavender);
+    bottom: -200px;
+    right: -100px;
+    animation-delay: -5s;
+}
+
+.blob-3 {
+    width: 350px;
+    height: 350px;
+    background: var(--soft-gold);
+    top: 40%;
+    left: 40%;
+    animation-delay: -10s;
+}
+
+@keyframes move {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(100px, 150px) scale(1.1); }
+    66% { transform: translate(-50px, 100px) scale(0.9); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+/* --- Pulsar Animation for AI --- */
+.pulsar {
+    animation: pulsar 2s infinite;
+}
+
+@keyframes pulsar {
+    0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(168, 85, 247, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
+}
+
+/* --- Bento Grid Layout --- */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    gap: 1.5rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Liquid Glass Card --- */
+.bento-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.bento-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* --- Specific Card Sizes --- */
+.card-large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.card-wide {
+    grid-column: span 2;
+}
+
+.card-tall {
+    grid-row: span 2;
+}
+
+/* --- Glow Gallery --- */
+.glow-gallery {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scrollbar-width: none;
+}
+
+.glow-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.polaroid-card {
+    min-width: 150px;
+    height: 190px;
+    background: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    transform: rotate(var(--rot));
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), var(--golden-glow);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.polaroid-card:hover {
+    transform: rotate(0) scale(1.1);
+    z-index: 10;
+}
+
+.polaroid-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    background: #eee;
+}
+
+.polaroid-caption {
+    font-family: 'Instrument Serif', serif;
+    color: #333;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* --- Mood Chart --- */
+.chart-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+/* --- Streak Badge --- */
+.streak-value {
+    font-size: 4rem;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    background: linear-gradient(to bottom, #fff, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 1024px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    .card-large, .card-wide {
+        grid-column: span 1;
+    }
+}
